@@ -15,6 +15,15 @@ void set_bc(Registers *regs, uint16_t val) {
   regs->c = (uint8_t)(val & 0x00FF);
 }
 
+uint16_t get_de(Registers *regs) {
+  return (uint16_t)(regs->d) << 8 | (uint16_t)regs->e;
+}
+
+void set_de(Registers *regs, uint16_t val) {
+  regs->d = (uint8_t)((val & 0xFF00) >> 8);
+  regs->e = (uint8_t)(val & 0x00FF);
+}
+
 uint16_t get_hl(Registers *regs) {
   return (uint16_t)(regs->h) << 8 | (uint16_t)regs->l;
 }

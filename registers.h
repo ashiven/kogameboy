@@ -17,6 +17,9 @@ Registers new_regs();
 uint16_t get_bc(Registers *regs);
 void set_bc(Registers *regs, uint16_t val);
 
+uint16_t get_de(Registers *regs);
+void set_de(Registers *regs, uint16_t val);
+
 uint16_t get_hl(Registers *regs);
 void set_hl(Registers *regs, uint16_t val);
 
