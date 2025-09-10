@@ -1,11 +1,15 @@
-#include "stdio.h"
+#include "registers.h"
+#include <stdio.h>
 
-struct Register{
-  unsigned char byte;
-};
+#define PRIu8 "%hhu"
+#define PRIu16 "%hu"
 
 int main() {
-  printf("hello world!\n");
+
+  Registers regs = new_regs();
+  set_bc(&regs, 0x0100);
+  uint16_t bc = get_bc(&regs);
+  printf(PRIu16, bc);
 
   return 0;
 }
