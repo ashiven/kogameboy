@@ -6,13 +6,22 @@ Registers new_regs() {
   return regs;
 }
 
-uint16_t get_bc(Registers *reg) {
-  return (uint16_t)(reg->b) << 8 | (uint16_t)reg->c;
+uint16_t get_bc(Registers *regs) {
+  return (uint16_t)(regs->b) << 8 | (uint16_t)regs->c;
 }
 
-void set_bc(Registers *reg, uint16_t val) {
-  reg->b = (uint8_t)((val & 0xFF00) >> 8);
-  reg->c = (uint8_t)(val & 0x00FF);
+void set_bc(Registers *regs, uint16_t val) {
+  regs->b = (uint8_t)((val & 0xFF00) >> 8);
+  regs->c = (uint8_t)(val & 0x00FF);
+}
+
+uint16_t get_hl(Registers *regs) {
+  return (uint16_t)(regs->h) << 8 | (uint16_t)regs->l;
+}
+
+void set_hl(Registers *regs, uint16_t val) {
+  regs->h = (uint8_t)((val & 0xFF00) >> 8);
+  regs->l = (uint8_t)(val & 0x00FF);
 }
 
 FlagRegister new_flag_reg() {

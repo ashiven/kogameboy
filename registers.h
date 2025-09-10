@@ -14,9 +14,11 @@ typedef struct {
 
 Registers new_regs();
 
-uint16_t get_bc(Registers *reg);
+uint16_t get_bc(Registers *regs);
+void set_bc(Registers *regs, uint16_t val);
 
-void set_bc(Registers *reg, uint16_t val);
+uint16_t get_hl(Registers *regs);
+void set_hl(Registers *regs, uint16_t val);
 
 typedef struct {
   bool zero;
