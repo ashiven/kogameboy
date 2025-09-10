@@ -4,5 +4,5 @@ run: gameboy
 	./gameboy
 
 gameboy:
-	gcc -Wall -Wextra -g3 -o gameboy main.c registers.c
+	gcc -Wall -Wextra -g3 -o gameboy main.c registers.c instructions.c cpu.c
 

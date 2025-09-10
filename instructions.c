@@ -64,66 +64,82 @@ const Instruction new_scf(enum ArithmeticTarget target) {
   const Instruction scf = {SCF, target};
   return scf;
 };
+
 const Instruction new_rra(enum ArithmeticTarget target) {
   const Instruction rra = {RRA, target};
   return rra;
 };
+
 const Instruction new_rla(enum ArithmeticTarget target) {
   const Instruction rla = {RLA, target};
   return rla;
 };
+
 const Instruction new_rrca(enum ArithmeticTarget target) {
   const Instruction rrca = {RRCA, target};
   return rrca;
 };
+
 const Instruction new_rrla(enum ArithmeticTarget target) {
   const Instruction rrla = {RRLA, target};
   return rrla;
 };
+
 const Instruction new_cpl(enum ArithmeticTarget target) {
   const Instruction cpl = {CPL, target};
   return cpl;
 };
+
 const Instruction new_bit(enum ArithmeticTarget target) {
   const Instruction bit = {BIT, target};
   return bit;
 };
+
 const Instruction new_reset(enum ArithmeticTarget target) {
   const Instruction reset = {RESET, target};
   return reset;
 };
+
 const Instruction new_set(enum ArithmeticTarget target) {
   const Instruction set = {SET, target};
   return set;
 };
+
 const Instruction new_srl(enum ArithmeticTarget target) {
   const Instruction srl = {SRL, target};
   return srl;
 };
+
 const Instruction new_rr(enum ArithmeticTarget target) {
   const Instruction rr = {RR, target};
   return rr;
 };
+
 const Instruction new_rl(enum ArithmeticTarget target) {
   const Instruction rl = {RL, target};
   return rl;
 };
+
 const Instruction new_rrc(enum ArithmeticTarget target) {
   const Instruction rrc = {RRC, target};
   return rrc;
 };
+
 const Instruction new_rlc(enum ArithmeticTarget target) {
   const Instruction rlc = {RLC, target};
   return rlc;
 };
+
 const Instruction new_sra(enum ArithmeticTarget target) {
   const Instruction sra = {SRA, target};
   return sra;
 };
+
 const Instruction new_sla(enum ArithmeticTarget target) {
   const Instruction sla = {SLA, target};
   return sla;
 };
+
 const Instruction new_swap(enum ArithmeticTarget target) {
   const Instruction swap = {SWAP, target};
   return swap;
