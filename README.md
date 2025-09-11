@@ -1,5 +1,5 @@
 <p align="center">
-  <h2 align="center">Kogameboy</h2>
+  <h2 align="center">Kogaboy</h2>
 </p>
 
 <p align="center">
@@ -9,22 +9,22 @@
 <div align="center">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub Release](https://img.shields.io/github/v/release/ashiven/kogameboy)](https://github.com/ashiven/kogameboy/releases)
-[![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/ashiven/kogameboy)](https://github.com/ashiven/kogameboy/issues)
-[![GitHub Issues or Pull Requests](https://img.shields.io/github/issues-pr/ashiven/kogameboy)](https://github.com/ashiven/kogameboy/pulls)
+[![GitHub Release](https://img.shields.io/github/v/release/ashiven/kogaboy)](https://github.com/ashiven/kogaboy/releases)
+[![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/ashiven/kogaboy)](https://github.com/ashiven/kogaboy/issues)
+[![GitHub Issues or Pull Requests](https://img.shields.io/github/issues-pr/ashiven/kogaboy)](https://github.com/ashiven/kogaboy/pulls)
 
 </div>
 
 ## About
 
-**Kogameboy** is a Gameboy emulator that was written in C for educational and recreational purposes only. It is currently still a work in progress but I am hoping to make it become fully functional soon.
+**Kogaboy** is a Gameboy emulator that was written in C for educational and recreational purposes only. It is currently still a work in progress but I am hoping to make it become fully functional soon.
 
 ## Setup
 
 1. Clone the repository.
 
 ```bash
-git clone https://github.com/ashiven/kogameboy.git
+git clone https://github.com/ashiven/kogaboy.git
 ```
 
 2. Build the Gameboy.
@@ -41,7 +41,7 @@ make gameboy
 
 ## Contributing
 
-Please feel free to submit a [pull request](https://github.com/ashiven/kogameboy/pulls) or open an [issue](https://github.com/ashiven/kogameboy/issues).
+Please feel free to submit a [pull request](https://github.com/ashiven/kogaboy/pulls) or open an [issue](https://github.com/ashiven/kogaboy/issues).
 
 1. Fork the repository
 2. Create a new branch: `git checkout -b feature-name`.
