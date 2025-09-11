@@ -10,7 +10,7 @@ typedef struct {
 
 void execute(CPU *cpu, Instruction *instruction);
 
-uint8_t reg_val(CPU *cpu, enum RegisterName target);
+uint8_t get_reg(CPU *cpu, enum RegisterName target);
 
 void set_reg(CPU *cpu, enum RegisterName target, uint8_t val);
 
