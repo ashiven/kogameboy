@@ -57,3 +57,27 @@ FlagRegister byte_to_flag_reg(uint8_t byte) {
 
   return flag_reg;
 }
+
+/* get_zero_bit returns 0000_0001 if zero flag is set
+ * and 0000_0000 otherwise.
+ */
+uint8_t get_zero(FlagRegister *flag_reg) { return flag_reg->zero ? 1 : 0; }
+
+/* get_subtract_bit returns 0000_0001 if subtract flag is set
+ * and 0000_0000 otherwise.
+ */
+uint8_t get_subtract(FlagRegister *flag_reg) {
+  return flag_reg->subtract ? 1 : 0;
+}
+
+/* get_half_carry_bit returns 0000_0001 if half_carry flag is set
+ * and 0000_0000 otherwise.
+ */
+uint8_t get_half_carry(FlagRegister *flag_reg) {
+  return flag_reg->half_carry ? 1 : 0;
+}
+
+/* get_carry_bit returns 0000_0001 if carry flag is set
+ * and 0000_0000 otherwise.
+ */
+uint8_t get_carry(FlagRegister *flag_reg) { return flag_reg->carry ? 1 : 0; }

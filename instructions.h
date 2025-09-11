@@ -17,7 +17,7 @@ enum InstructionKind {
   RRA,   /*Bit rotate right register A through carry flag*/
   RLA,   /*Bit rotate left register A through carry flag*/
   RRCA,  /*Bit rotate right register A not through carry flag*/
-  RRLA,  /*Bit rotate left register A not through carry flag*/
+  RLCA,  /*Bit rotate left register A not through carry flag*/
   CPL,   /*Toggle every bit of the A register*/
   BIT,   /*Test whether a specific bit of register A is set*/
   RESET, /*Reset a bit of target to 0*/
@@ -37,6 +37,7 @@ enum RegisterName { A, B, C, D, E, F, H, L, BC, DE, HL };
 typedef struct {
   enum InstructionKind kind;
   enum RegisterName target;
+  uint8_t bit_index;
 } Instruction;
 
 const Instruction new_add(enum RegisterName target);
@@ -55,11 +56,11 @@ const Instruction new_scf(enum RegisterName target);
 const Instruction new_rra(enum RegisterName target);
 const Instruction new_rla(enum RegisterName target);
 const Instruction new_rrca(enum RegisterName target);
-const Instruction new_rrla(enum RegisterName target);
+const Instruction new_rlca(enum RegisterName target);
 const Instruction new_cpl(enum RegisterName target);
-const Instruction new_bit(enum RegisterName target);
-const Instruction new_reset(enum RegisterName target);
-const Instruction new_set(enum RegisterName target);
+const Instruction new_bit(uint8_t bit_index, enum RegisterName target);
+const Instruction new_reset(uint8_t bit_index, enum RegisterName target);
+const Instruction new_set(uint8_t bit_index, enum RegisterName target);
 const Instruction new_srl(enum RegisterName target);
 const Instruction new_rr(enum RegisterName target);
 const Instruction new_rl(enum RegisterName target);

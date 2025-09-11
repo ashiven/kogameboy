@@ -40,3 +40,8 @@ FlagRegister new_flag_reg();
 uint8_t flag_reg_to_byte(FlagRegister *flag_reg);
 
 FlagRegister byte_to_flag_reg(uint8_t byte);
+
+uint8_t get_zero(FlagRegister *flag_reg);
+uint8_t get_subtract(FlagRegister *flag_reg);
+uint8_t get_half_carry(FlagRegister *flag_reg);
+uint8_t get_carry(FlagRegister *flag_reg);
