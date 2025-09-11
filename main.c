@@ -1,4 +1,4 @@
-#include "registers.h"
+#include "src/registers.h"
 #include <stdio.h>
 
 #define PRIu8 "%hhu"

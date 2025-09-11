@@ -5,62 +5,91 @@ void execute(CPU *cpu, Instruction *instruction) {
   switch (instruction->kind) {
   case ADD:
     add(cpu, instruction->target);
+    break;
   case ADDHL:
     addhl(cpu, instruction->target);
+    break;
   case ADC:
     adc(cpu, instruction->target);
+    break;
   case SUB:
     sub(cpu, instruction->target);
+    break;
   case SBC:
     sbc(cpu, instruction->target);
+    break;
   case AND:
     and_(cpu, instruction->target);
+    break;
   case OR:
     or_(cpu, instruction->target);
+    break;
   case XOR:
     xor_(cpu, instruction->target);
+    break;
   case CP:
     cp(cpu, instruction->target);
+    break;
   case INC:
     inc(cpu, instruction->target);
+    break;
   case DEC:
     dec(cpu, instruction->target);
+    break;
   case CCF:
-    ccf(cpu, instruction->target);
+    ccf(cpu);
+    break;
   case SCF:
-    scf(cpu, instruction->target);
+    scf(cpu);
+    break;
   case RRA:
-    rra(cpu, instruction->target);
+    rra(cpu);
+    break;
   case RLA:
-    rla(cpu, instruction->target);
+    rla(cpu);
+    break;
   case RRCA:
-    rrca(cpu, instruction->target);
+    rrca(cpu);
+    break;
   case RLCA:
-    rlca(cpu, instruction->target);
+    rlca(cpu);
+    break;
   case CPL:
-    cpl(cpu, instruction->target);
+    cpl(cpu);
+    break;
   case BIT:
     bit(cpu, instruction->bit_index, instruction->target);
+    break;
   case RESET:
     reset(cpu, instruction->bit_index, instruction->target);
+    break;
   case SET:
     set(cpu, instruction->bit_index, instruction->target);
+    break;
   case SRL:
     srl(cpu, instruction->target);
+    break;
   case RR:
     rr(cpu, instruction->target);
+    break;
   case RL:
     rl(cpu, instruction->target);
+    break;
   case RRC:
     rrc(cpu, instruction->target);
+    break;
   case RLC:
     rlc(cpu, instruction->target);
+    break;
   case SRA:
     sra(cpu, instruction->target);
+    break;
   case SLA:
     sla(cpu, instruction->target);
+    break;
   case SWAP:
     swap(cpu, instruction->target);
+    break;
   }
 }
 
@@ -89,32 +118,44 @@ uint8_t get_reg(CPU *cpu, enum RegisterName reg) {
   case HL:
     return get_hl(&cpu->registers);
   }
+  return 0;
 }
 
 void set_reg(CPU *cpu, enum RegisterName reg, uint8_t val) {
   switch (reg) {
   case A:
     cpu->registers.a = val;
+    break;
   case B:
     cpu->registers.b = val;
+    break;
   case C:
     cpu->registers.c = val;
+    break;
   case D:
     cpu->registers.d = val;
+    break;
   case E:
     cpu->registers.e = val;
+    break;
   case F:
     cpu->registers.f = val;
+    break;
   case H:
     cpu->registers.h = val;
+    break;
   case L:
     cpu->registers.l = val;
+    break;
   case BC:
     set_bc(&cpu->registers, val);
+    break;
   case DE:
     set_de(&cpu->registers, val);
+    break;
   case HL:
     set_hl(&cpu->registers, val);
+    break;
   }
 }
 
@@ -282,7 +323,7 @@ void dec(CPU *cpu, enum RegisterName target) {
   set_reg(cpu, target, res);
 }
 
-void ccf(CPU *cpu, enum RegisterName target) {
+void ccf(CPU *cpu) {
   bool zero = cpu->flag_reg.zero;
   bool subtract = false;
   bool half_carry = false;
@@ -290,7 +331,7 @@ void ccf(CPU *cpu, enum RegisterName target) {
   update_flags(cpu, zero, subtract, half_carry, carry);
 }
 
-void scf(CPU *cpu, enum RegisterName target) {
+void scf(CPU *cpu) {
   bool zero = cpu->flag_reg.zero;
   bool subtract = false;
   bool half_carry = false;
@@ -307,7 +348,7 @@ void scf(CPU *cpu, enum RegisterName target) {
  *
  * b0  c b7 b6 b5 b4 b3 b2 b1
  */
-void rra(CPU *cpu, enum RegisterName target) {
+void rra(CPU *cpu) {
   uint8_t lsb = get_reg(cpu, A) & 1;
   // NOTE: The fill-in value for logic shifts is 0, while it is a sign extension
   // for right arithmetic shifts. Just keep that in mind. (However, since we are
@@ -332,7 +373,7 @@ void rra(CPU *cpu, enum RegisterName target) {
  *
  * b7  b6 b5 b4 b3 b2 b1 b0 c
  */
-void rla(CPU *cpu, enum RegisterName target) {
+void rla(CPU *cpu) {
   uint8_t msb = get_reg(cpu, A) & (1 << 7);
   uint8_t res = get_carry(&cpu->flag_reg) | get_reg(cpu, A) << 1;
 
@@ -353,7 +394,7 @@ void rla(CPU *cpu, enum RegisterName target) {
  *
  * b0  0 b7 b6 b5 b4 b3 b2 b1
  */
-void rrca(CPU *cpu, enum RegisterName target) {
+void rrca(CPU *cpu) {
   uint8_t lsb = get_reg(cpu, A) & 1;
   uint8_t res = get_reg(cpu, A) >> 1;
 
@@ -374,7 +415,7 @@ void rrca(CPU *cpu, enum RegisterName target) {
  *
  * b7  b6 b5 b4 b3 b2 b1 b0 0
  */
-void rlca(CPU *cpu, enum RegisterName target) {
+void rlca(CPU *cpu) {
   uint8_t msb = get_reg(cpu, A) & (1 << 7);
   uint8_t res = get_reg(cpu, A) << 1;
 
@@ -387,7 +428,7 @@ void rlca(CPU *cpu, enum RegisterName target) {
   set_reg(cpu, A, res);
 }
 
-void cpl(CPU *cpu, enum RegisterName target) {
+void cpl(CPU *cpu) {
   uint8_t res = ~get_reg(cpu, A);
 
   bool zero = cpu->flag_reg.zero;
@@ -434,7 +475,7 @@ void reset(CPU *cpu, uint8_t bit_index, enum RegisterName target) {
  * 0  1  0  0  0  0  0  0
  * */
 void set(CPU *cpu, uint8_t bit_index, enum RegisterName target) {
-  uint8_t res = get_reg(cpu, target) || (1 << bit_index);
+  uint8_t res = get_reg(cpu, target) | (1 << bit_index);
 
   set_reg(cpu, target, res);
 }
