@@ -118,7 +118,7 @@ void execute(CPU *cpu, const Instruction *instruction) {
 uint8_t get_reg(CPU *cpu, enum RegisterName reg) {
     switch (reg) {
         case A:
-            return get_reg(cpu, A);
+            return cpu->registers.a;
         case B:
             return cpu->registers.b;
         case C:
@@ -187,9 +187,11 @@ void print_reg(CPU *cpu, enum RegisterName reg) {
 }
 
 void print_regs(CPU *cpu) {
+    printf("----------------\n");
     for (int reg = A; reg <= HL; reg++) {
         print_reg(cpu, reg);
     }
+    printf("----------------\n");
 }
 
 void update_flags(CPU *cpu, bool zero, bool subtract, bool half_carry, bool carry) {
