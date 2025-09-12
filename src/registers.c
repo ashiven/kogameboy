@@ -6,6 +6,35 @@
 #define LOWER_M 0x00FF
 #define BYTE_SIZE 8
 
+const char *reg_name(enum RegisterName reg) {
+    switch (reg) {
+        case A:
+            return "A";
+        case B:
+            return "B";
+        case C:
+            return "C";
+        case D:
+            return "D";
+        case E:
+            return "E";
+        case F:
+            return "F";
+        case H:
+            return "H";
+        case L:
+            return "L";
+        case BC:
+            return "BC";
+        case DE:
+            return "DE";
+        case HL:
+            return "HL";
+    }
+
+    return "Unknown";
+}
+
 Registers new_regs(void) {
     Registers regs = {'\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'};
     return regs;

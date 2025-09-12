@@ -1,6 +1,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+// TODO: AF, SP, and PC
+enum RegisterName { A, B, C, D, E, F, H, L, BC, DE, HL };  // NOLINT
+
 typedef struct {
     uint8_t a;
     uint8_t b;
@@ -11,6 +14,8 @@ typedef struct {
     uint8_t h;
     uint8_t l;
 } Registers;
+
+const char *reg_name(enum RegisterName reg);
 
 Registers new_regs(void);
 

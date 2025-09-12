@@ -1,11 +1,27 @@
 #include "../include/cpu.h"
 
 #include <stdint.h>
+#include <stdio.h>
 
 #define HBYTE_M 0xF
 #define BYTE_M 0xFF
 #define BBYTE_M 0xFFFF
 #define MSB_IDX 7
+
+// Source:
+// https://stackoverflow.com/questions/111928/is-there-a-printf-converter-to-print-in-binary-format
+#define PRIbin "%c%c%c%c_%c%c%c%c"
+#define BYTE_TO_BIN(byte)                                                                      \
+    ((byte) & 0x80 ? '1' : '0'), ((byte) & 0x40 ? '1' : '0'), ((byte) & 0x20 ? '1' : '0'),     \
+        ((byte) & 0x10 ? '1' : '0'), ((byte) & 0x08 ? '1' : '0'), ((byte) & 0x04 ? '1' : '0'), \
+        ((byte) & 0x02 ? '1' : '0'), ((byte) & 0x01 ? '1' : '0')
+
+CPU new_cpu(void) {
+    Registers regs = new_regs();
+    FlagRegister flag_reg = new_flag_reg();
+    CPU cpu = {regs, flag_reg};
+    return cpu;
+}
 
 void execute(CPU *cpu, const Instruction *instruction) {
     switch (instruction->kind) {
@@ -162,6 +178,17 @@ void set_reg(CPU *cpu, enum RegisterName reg, uint8_t val) {  // NOLINT
         case HL:
             set_hl(&cpu->registers, val);
             break;
+    }
+}
+
+void print_reg(CPU *cpu, enum RegisterName reg) {
+    uint8_t val = get_reg(cpu, reg);
+    printf("%s: " PRIbin "\n", reg_name(reg), BYTE_TO_BIN(val));
+}
+
+void print_regs(CPU *cpu) {
+    for (int reg = A; reg <= HL; reg++) {
+        print_reg(cpu, reg);
     }
 }
 

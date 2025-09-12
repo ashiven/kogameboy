@@ -1,5 +1,7 @@
 #include <stdint.h>
 
+#include "../include/registers.h"
+
 enum InstructionKind {  // NOLINT
     ADD,                /*Add target to register A*/
     ADDHL,              /*Add target to register HL*/
@@ -31,9 +33,6 @@ enum InstructionKind {  // NOLINT
     SLA,                /*Arithmetic shift target to the left by 1*/
     SWAP,               /*swap the upper and lower halfs (4 Bits each) of the target*/
 };
-
-// TODO: AF, SP, and PC
-enum RegisterName { A, B, C, D, E, F, H, L, BC, DE, HL };  // NOLINT
 
 typedef struct {
     enum InstructionKind kind;
