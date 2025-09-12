@@ -1,21 +1,21 @@
-#include "instructions.h"
-#include "registers.h"
 #include <stdint.h>
 
+#include "instructions.h"
+#include "registers.h"
+
 typedef struct {
-  Registers registers;
-  FlagRegister flag_reg;
+    Registers registers;
+    FlagRegister flag_reg;
 
 } CPU;
 
-void execute(CPU *cpu, Instruction *instruction);
+void execute(CPU *cpu, const Instruction *instruction);
 
-uint8_t get_reg(CPU *cpu, enum RegisterName target);
+uint8_t get_reg(CPU *cpu, enum RegisterName reg);
 
-void set_reg(CPU *cpu, enum RegisterName target, uint8_t val);
+void set_reg(CPU *cpu, enum RegisterName reg, uint8_t val);
 
-void update_flags(CPU *cpu, bool zero, bool subtract, bool carry,
-                  bool half_carry);
+void update_flags(CPU *cpu, bool zero, bool subtract, bool half_carry, bool carry);
 
 void add(CPU *cpu, enum RegisterName target);
 void addhl(CPU *cpu, enum RegisterName target);
