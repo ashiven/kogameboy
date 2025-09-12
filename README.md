@@ -30,13 +30,13 @@ git clone https://github.com/ashiven/kogaboy.git
 2. Build the Gameboy.
 
 ```bash
-make gameboy
+make build
 ```
 
 3. Run the Gameboy.
 
 ```bash
-./gameboy
+./bin/kogaboy
 ```
 
 ## Contributing
