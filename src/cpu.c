@@ -163,138 +163,140 @@ void update_flags(CPU *cpu, bool zero, bool subtract, bool half_carry,
                   bool carry) {
   cpu->flag_reg.zero = zero;
   cpu->flag_reg.subtract = subtract;
-  cpu->flag_reg.carry = carry;
   cpu->flag_reg.half_carry = half_carry;
+  cpu->flag_reg.carry = carry;
 
   cpu->registers.f = flag_reg_to_byte(&cpu->flag_reg);
 }
 
 void add(CPU *cpu, enum RegisterName target) {
+  uint8_t acc = get_reg(cpu, A);
   uint8_t val = get_reg(cpu, target);
-  // TODO: overflowing add
-  uint8_t res = get_reg(cpu, A) + val;
+  // This will wrap around i.e.
+  // acc = 1111_1111 and val = 0000_0010
+  // --> res = 0000_0001
+  uint8_t res = acc + val;
 
   bool zero = res == 0;
   bool subtract = false;
-  // TODO: overflowing add res
-  bool carry = false;
-  // NOTE: checks if lower half of the res byte is greater than binary 1111
-  bool half_carry = (val & 0xF) + (get_reg(cpu, A) & 0xF) > 0xF;
-  update_flags(cpu, zero, subtract, carry, half_carry);
+  bool half_carry = (acc & 0xF) + (val & 0xF) > 0xF;
+  bool carry = acc + val > 0xFF;
+  update_flags(cpu, zero, subtract, half_carry, carry);
 
   set_reg(cpu, A, res);
 }
 
-// TODO: target has to be either BC, DE, HL, or SP
 void addhl(CPU *cpu, enum RegisterName target) {
-  uint8_t val = get_reg(cpu, target);
-  // TODO: overflowing add
-  uint16_t res = get_hl(&cpu->registers) + val;
+  uint16_t acc = get_reg(cpu, HL);
+  // val is one of the 16 bit regs: BC, DE, HL, SP
+  uint16_t val = get_reg(cpu, target);
+  uint16_t res = acc + val;
 
   bool zero = res == 0;
   bool subtract = false;
-  // TODO: overflowing add res
-  bool carry = false;
-  // NOTE: checks if lower half of the res byte is greater than binary 1111_1111
-  bool half_carry = (val & 0xFF) + (get_hl(&cpu->registers) & 0xFF) > 0xFF;
-  update_flags(cpu, zero, subtract, carry, half_carry);
+  bool half_carry = (acc & 0xFF) + (val & 0xFF) > 0xFF;
+  bool carry = acc + val > 0xFFFF;
+  update_flags(cpu, zero, subtract, half_carry, carry);
 
-  set_hl(&cpu->registers, res);
+  set_reg(cpu, HL, res);
 }
 
 void adc(CPU *cpu, enum RegisterName target) {
+  uint8_t acc = get_reg(cpu, A);
   uint8_t val = get_reg(cpu, target);
-  uint8_t carry_val = (cpu->registers.f >> CARRY_BIT_POS) & 1;
-  // TODO: overflowing add
-  uint8_t res = get_reg(cpu, A) + val + carry_val;
+  uint8_t c = get_carry(&cpu->flag_reg);
+  uint8_t res = acc + val + c;
 
   bool zero = res == 0;
   bool subtract = false;
-  // TODO: overflowing add res
-  bool carry = false;
-  // NOTE: checks if lower half of the res byte is greater than binary 1111
-  bool half_carry =
-      (get_reg(cpu, A) & 0xF) + (val & 0xF) + (carry_val & 0xF) > 0xF;
-  update_flags(cpu, zero, subtract, carry, half_carry);
+  bool half_carry = (acc & 0xF) + (val & 0xF) + (c & 0xF) > 0xF;
+  bool carry = acc + val + c > 0xFF;
+  update_flags(cpu, zero, subtract, half_carry, carry);
 
   set_reg(cpu, A, res);
 }
 
 void sub(CPU *cpu, enum RegisterName target) {
+  uint8_t acc = get_reg(cpu, A);
   uint8_t val = get_reg(cpu, target);
-  uint8_t res = get_reg(cpu, A) - val;
+  uint8_t res = acc - val;
 
   bool zero = res == 0;
   bool subtract = true;
-  bool carry = false;
-  bool half_carry = false;
-  update_flags(cpu, zero, subtract, carry, half_carry);
+  bool half_carry = (acc & 0xF) >= (val & 0xF);
+  bool carry = acc >= val;
+  update_flags(cpu, zero, subtract, half_carry, carry);
 
   set_reg(cpu, A, res);
 }
 
 void sbc(CPU *cpu, enum RegisterName target) {
+  uint8_t acc = get_reg(cpu, A);
   uint8_t val = get_reg(cpu, target);
-  uint8_t carry_val = (cpu->registers.f >> CARRY_BIT_POS) & 1;
-  uint8_t res = get_reg(cpu, A) - val - carry_val;
+  uint8_t c = get_carry(&cpu->flag_reg);
+  uint8_t res = acc - val - c;
 
   bool zero = res == 0;
   bool subtract = true;
-  bool carry = false;
-  bool half_carry = false;
-  update_flags(cpu, zero, subtract, carry, half_carry);
+  bool half_carry = (acc & 0xF) >= (val & 0xF) + (c & 0xF);
+  bool carry = acc >= (val + c);
+  update_flags(cpu, zero, subtract, half_carry, carry);
 
   set_reg(cpu, A, res);
 }
 
 void and_(CPU *cpu, enum RegisterName target) {
+  uint8_t acc = get_reg(cpu, A);
   uint8_t val = get_reg(cpu, target);
-  uint8_t res = get_reg(cpu, A) && val;
+  uint8_t res = acc && val;
 
   bool zero = res == 0;
   bool subtract = false;
+  bool half_carry = true;
   bool carry = false;
-  bool half_carry = false;
-  update_flags(cpu, zero, subtract, carry, half_carry);
+  update_flags(cpu, zero, subtract, half_carry, carry);
 
   set_reg(cpu, A, res);
 }
 
 void or_(CPU *cpu, enum RegisterName target) {
+  uint8_t acc = get_reg(cpu, A);
   uint8_t val = get_reg(cpu, target);
-  uint8_t res = get_reg(cpu, A) || val;
+  uint8_t res = acc || val;
 
   bool zero = res == 0;
   bool subtract = false;
+  bool half_carry = true;
   bool carry = false;
-  bool half_carry = false;
-  update_flags(cpu, zero, subtract, carry, half_carry);
+  update_flags(cpu, zero, subtract, half_carry, carry);
 
   set_reg(cpu, A, res);
 }
 
 void xor_(CPU *cpu, enum RegisterName target) {
+  uint8_t acc = get_reg(cpu, A);
   uint8_t val = get_reg(cpu, target);
-  uint8_t res = get_reg(cpu, A) ^ val;
+  uint8_t res = acc ^ val;
 
   bool zero = res == 0;
   bool subtract = false;
+  bool half_carry = true;
   bool carry = false;
-  bool half_carry = false;
-  update_flags(cpu, zero, subtract, carry, half_carry);
+  update_flags(cpu, zero, subtract, half_carry, carry);
 
   set_reg(cpu, A, res);
 }
 
 void cp(CPU *cpu, enum RegisterName target) {
+  uint8_t acc = get_reg(cpu, A);
   uint8_t val = get_reg(cpu, target);
-  uint8_t res = get_reg(cpu, A) - val;
+  uint8_t res = acc - val;
 
   bool zero = res == 0;
   bool subtract = true;
-  bool carry = false;
-  bool half_carry = false;
-  update_flags(cpu, zero, subtract, carry, half_carry);
+  bool half_carry = (acc & 0xF) >= (val & 0xF);
+  bool carry = acc >= val;
+  update_flags(cpu, zero, subtract, half_carry, carry);
 }
 
 void inc(CPU *cpu, enum RegisterName target) {
@@ -303,9 +305,9 @@ void inc(CPU *cpu, enum RegisterName target) {
 
   bool zero = res == 0;
   bool subtract = false;
-  bool carry = false;
-  bool half_carry = false;
-  update_flags(cpu, zero, subtract, carry, half_carry);
+  bool half_carry = (val & 0xF) + 1 > 0xF;
+  bool carry = cpu->flag_reg.carry;
+  update_flags(cpu, zero, subtract, half_carry, carry);
 
   set_reg(cpu, target, res);
 }
@@ -316,9 +318,9 @@ void dec(CPU *cpu, enum RegisterName target) {
 
   bool zero = res == 0;
   bool subtract = true;
-  bool carry = false;
-  bool half_carry = false;
-  update_flags(cpu, zero, subtract, carry, half_carry);
+  bool half_carry = (val & 0xF) >= 1;
+  bool carry = cpu->flag_reg.carry;
+  update_flags(cpu, zero, subtract, half_carry, carry);
 
   set_reg(cpu, target, res);
 }
@@ -349,11 +351,10 @@ void scf(CPU *cpu) {
  * b0  c b7 b6 b5 b4 b3 b2 b1
  */
 void rra(CPU *cpu) {
-  uint8_t lsb = get_reg(cpu, A) & 1;
-  // NOTE: The fill-in value for logic shifts is 0, while it is a sign extension
-  // for right arithmetic shifts. Just keep that in mind. (However, since we are
-  // working with unsigned values, we should only get logic shifts)
-  uint8_t res = get_carry(&cpu->flag_reg) << 7 | get_reg(cpu, A) >> 1;
+  uint8_t acc = get_reg(cpu, A);
+  uint8_t lsb = acc & 1;
+  uint8_t c = get_carry(&cpu->flag_reg);
+  uint8_t res = c << 7 | acc >> 1;
 
   bool zero = res == 0;
   bool subtract = false;
@@ -374,8 +375,10 @@ void rra(CPU *cpu) {
  * b7  b6 b5 b4 b3 b2 b1 b0 c
  */
 void rla(CPU *cpu) {
-  uint8_t msb = get_reg(cpu, A) & (1 << 7);
-  uint8_t res = get_carry(&cpu->flag_reg) | get_reg(cpu, A) << 1;
+  uint8_t acc = get_reg(cpu, A);
+  uint8_t msb = (acc >> 7) & 1;
+  uint8_t c = get_carry(&cpu->flag_reg);
+  uint8_t res = acc << 1 | c;
 
   bool zero = res == 0;
   bool subtract = false;
@@ -392,11 +395,12 @@ void rla(CPU *cpu) {
  *
  * c   b7 b6 b5 b4 b3 b2 b1 b0
  *
- * b0  0 b7 b6 b5 b4 b3 b2 b1
+ * b0  b0 b7 b6 b5 b4 b3 b2 b1
  */
 void rrca(CPU *cpu) {
-  uint8_t lsb = get_reg(cpu, A) & 1;
-  uint8_t res = get_reg(cpu, A) >> 1;
+  uint8_t acc = get_reg(cpu, A);
+  uint8_t lsb = acc & 1;
+  uint8_t res = lsb << 7 | acc >> 1;
 
   bool zero = res == 0;
   bool subtract = false;
@@ -413,11 +417,12 @@ void rrca(CPU *cpu) {
  *
  * c   b7 b6 b5 b4 b3 b2 b1 b0
  *
- * b7  b6 b5 b4 b3 b2 b1 b0 0
+ * b7  b6 b5 b4 b3 b2 b1 b0 b7
  */
 void rlca(CPU *cpu) {
-  uint8_t msb = get_reg(cpu, A) & (1 << 7);
-  uint8_t res = get_reg(cpu, A) << 1;
+  uint8_t acc = get_reg(cpu, A);
+  uint8_t msb = (acc >> 7) & 1;
+  uint8_t res = acc << 1 | msb;
 
   bool zero = res == 0;
   bool subtract = false;
@@ -429,7 +434,8 @@ void rlca(CPU *cpu) {
 }
 
 void cpl(CPU *cpu) {
-  uint8_t res = ~get_reg(cpu, A);
+  uint8_t acc = get_reg(cpu, A);
+  uint8_t res = ~acc;
 
   bool zero = cpu->flag_reg.zero;
   bool subtract = true;
@@ -441,9 +447,10 @@ void cpl(CPU *cpu) {
 }
 
 void bit(CPU *cpu, uint8_t bit_index, enum RegisterName target) {
-  uint8_t test_bit = (get_reg(cpu, target) >> bit_index) & 1;
+  uint8_t val = get_reg(cpu, target);
+  uint8_t bit = (val >> bit_index) & 1;
 
-  bool zero = test_bit == 0;
+  bool zero = bit == 0;
   bool subtract = false;
   bool half_carry = true;
   bool carry = cpu->flag_reg.carry;
@@ -460,7 +467,8 @@ void bit(CPU *cpu, uint8_t bit_index, enum RegisterName target) {
  * 1  0  1  1  1  1  1  1
  * */
 void reset(CPU *cpu, uint8_t bit_index, enum RegisterName target) {
-  uint8_t res = get_reg(cpu, target) & ~(1 << bit_index);
+  uint8_t val = get_reg(cpu, target);
+  uint8_t res = val & ~(1 << bit_index);
 
   set_reg(cpu, target, res);
 }
@@ -470,19 +478,30 @@ void reset(CPU *cpu, uint8_t bit_index, enum RegisterName target) {
  *
  * b7 b6 b5 b4 b3 b2 b1 b0
  *
- * ||
+ * |
  *
  * 0  1  0  0  0  0  0  0
  * */
 void set(CPU *cpu, uint8_t bit_index, enum RegisterName target) {
-  uint8_t res = get_reg(cpu, target) | (1 << bit_index);
+  uint8_t val = get_reg(cpu, target);
+  uint8_t res = val | (1 << bit_index);
 
   set_reg(cpu, target, res);
 }
 
+/* Shift target right into carry
+ * - lsb becomes new carry
+ * - msb becomes 0
+ * - the rest of the bits are right shifted
+ *
+ * c   b7 b6 b5 b4 b3 b2 b1 b0
+ *
+ * b0  0 b7 b6 b5 b4 b3 b2 b1
+ */
 void srl(CPU *cpu, enum RegisterName target) {
-  uint8_t lsb = get_reg(cpu, target) & 1;
-  uint8_t res = get_reg(cpu, target) >> 1;
+  uint8_t val = get_reg(cpu, target);
+  uint8_t lsb = val & 1;
+  uint8_t res = val >> 1;
 
   bool zero = res == 0;
   bool subtract = false;
@@ -503,8 +522,10 @@ void srl(CPU *cpu, enum RegisterName target) {
  * b0  c b7 b6 b5 b4 b3 b2 b1
  */
 void rr(CPU *cpu, enum RegisterName target) {
-  uint8_t lsb = get_reg(cpu, target) & 1;
-  uint8_t res = get_carry(&cpu->flag_reg) << 7 | get_reg(cpu, target) >> 1;
+  uint8_t val = get_reg(cpu, target);
+  uint8_t lsb = val & 1;
+  uint8_t c = get_carry(&cpu->flag_reg);
+  uint8_t res = c << 7 | val >> 1;
 
   bool zero = res == 0;
   bool subtract = false;
@@ -525,8 +546,10 @@ void rr(CPU *cpu, enum RegisterName target) {
  * b7  b6 b5 b4 b3 b2 b1 b0 c
  */
 void rl(CPU *cpu, enum RegisterName target) {
-  uint8_t msb = get_reg(cpu, target) & (1 << 7);
-  uint8_t res = get_carry(&cpu->flag_reg) | get_reg(cpu, target) << 1;
+  uint8_t val = get_reg(cpu, target);
+  uint8_t msb = (val >> 7) & 1;
+  uint8_t c = get_carry(&cpu->flag_reg);
+  uint8_t res = val << 1 | c;
 
   bool zero = res == 0;
   bool subtract = false;
@@ -543,11 +566,12 @@ void rl(CPU *cpu, enum RegisterName target) {
  *
  * c   b7 b6 b5 b4 b3 b2 b1 b0
  *
- * b0  0 b7 b6 b5 b4 b3 b2 b1
+ * b0  b0 b7 b6 b5 b4 b3 b2 b1
  */
 void rrc(CPU *cpu, enum RegisterName target) {
-  uint8_t lsb = get_reg(cpu, target) & 1;
-  uint8_t res = get_reg(cpu, target) >> 1;
+  uint8_t val = get_reg(cpu, target);
+  uint8_t lsb = val & 1;
+  uint8_t res = (lsb << 7) | val >> 1;
 
   bool zero = res == 0;
   bool subtract = false;
@@ -564,11 +588,12 @@ void rrc(CPU *cpu, enum RegisterName target) {
  *
  * c   b7 b6 b5 b4 b3 b2 b1 b0
  *
- * b7  b6 b5 b4 b3 b2 b1 b0 0
+ * b7  b6 b5 b4 b3 b2 b1 b0 b7
  */
 void rlc(CPU *cpu, enum RegisterName target) {
-  uint8_t msb = get_reg(cpu, target) & (1 << 7);
-  uint8_t res = get_reg(cpu, target) << 1;
+  uint8_t val = get_reg(cpu, target);
+  uint8_t msb = (val >> 7) & 1;
+  uint8_t res = val << 1 | msb;
 
   bool zero = res == 0;
   bool subtract = false;
@@ -581,15 +606,18 @@ void rlc(CPU *cpu, enum RegisterName target) {
 
 /* Shift target right into carry (also sign extend)
  * - lsb becomes new carry
+ * - msb is duplicated
+ * - bits are right shifted
  *
  * c  b7 b6 b5 b4 b3 b2 b1 b0
  *
  * b0 b7 b7 b6 b5 b4 b3 b2 b1
  */
 void sra(CPU *cpu, enum RegisterName target) {
-  uint8_t lsb = get_reg(cpu, target) & 1;
-  uint8_t msb = get_reg(cpu, target) & (1 << 7);
-  uint8_t res = msb | get_reg(cpu, target) >> 1;
+  uint8_t val = get_reg(cpu, target);
+  uint8_t lsb = val & 1;
+  uint8_t msb = (val >> 7) & 1;
+  uint8_t res = msb << 7 | val >> 1;
 
   bool zero = res == 0;
   bool subtract = false;
@@ -608,8 +636,9 @@ void sra(CPU *cpu, enum RegisterName target) {
  * b7 b6 b5 b4 b3 b2 b1 b0 0
  */
 void sla(CPU *cpu, enum RegisterName target) {
-  uint8_t msb = get_reg(cpu, target) & (1 << 7);
-  uint8_t res = get_reg(cpu, target) << 1;
+  uint8_t val = get_reg(cpu, target);
+  uint8_t msb = (val >> 7) & 1;
+  uint8_t res = val << 1;
 
   bool zero = res == 0;
   bool subtract = false;
@@ -621,9 +650,10 @@ void sla(CPU *cpu, enum RegisterName target) {
 }
 
 void swap(CPU *cpu, enum RegisterName target) {
-  uint8_t lower_half = get_reg(cpu, target) & 0xF;
-  uint8_t upper_half = (get_reg(cpu, target) >> 4) & 0xF;
-  uint8_t res = lower_half << 4 | upper_half;
+  uint8_t val = get_reg(cpu, target);
+  uint8_t lower_nibble = val & 0xF;
+  uint8_t upper_nibble = (val >> 4) & 0xF;
+  uint8_t res = lower_nibble << 4 | upper_nibble;
 
   bool zero = res == 0;
   bool subtract = false;

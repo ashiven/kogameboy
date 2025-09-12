@@ -32,6 +32,7 @@ enum InstructionKind {
   SWAP,  /*swap the upper and lower halfs (4 Bits each) of the target*/
 };
 
+// TODO: AF, SP, and PC
 enum RegisterName { A, B, C, D, E, F, H, L, BC, DE, HL };
 
 typedef struct {
