@@ -1,0 +1,20 @@
+# Doxyfile simplified configuration
+# Doxygen version 1.9.8
+
+PROJECT_NAME       = "Kogaboy"
+OUTPUT_DIRECTORY   = docs
+CREATE_SUBDIRS     = NO
+
+INPUT              = .
+FILE_PATTERNS      = *.c *.h *.cpp *.hpp
+RECURSIVE          = YES
+EXTRACT_ALL        = YES
+
+GENERATE_HTML      = YES
+HTML_OUTPUT        = html
+
+GENERATE_LATEX     = YES
+LATEX_OUTPUT       = latex
+
+QUIET              = YES
+WARNINGS           = NO
