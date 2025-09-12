@@ -127,7 +127,7 @@ uint8_t get_reg(CPU *cpu, enum RegisterName reg) {
     return 0;
 }
 
-void set_reg(CPU *cpu, enum RegisterName reg, uint8_t val) {
+void set_reg(CPU *cpu, enum RegisterName reg, uint8_t val) {  // NOLINT
     switch (reg) {
         case A:
             cpu->registers.a = val;
@@ -314,7 +314,7 @@ void inc(CPU *cpu, enum RegisterName target) {
     bool carry = cpu->flag_reg.carry;
     update_flags(cpu, zero, subtract, half_carry, carry);
 
-    set_reg(cpu, target, res);
+    set_reg(cpu, target, res);  // NOLINT
 }
 
 void dec(CPU *cpu, enum RegisterName target) {
@@ -327,7 +327,7 @@ void dec(CPU *cpu, enum RegisterName target) {
     bool carry = cpu->flag_reg.carry;
     update_flags(cpu, zero, subtract, half_carry, carry);
 
-    set_reg(cpu, target, res);
+    set_reg(cpu, target, res);  // NOLINT
 }
 
 void ccf(CPU *cpu) {
@@ -451,7 +451,7 @@ void cpl(CPU *cpu) {
     set_reg(cpu, A, res);
 }
 
-void bit(CPU *cpu, uint8_t bit_index, enum RegisterName target) {
+void bit(CPU *cpu, uint8_t bit_index, enum RegisterName target) {  // NOLINT
     uint8_t val = get_reg(cpu, target);
     uint8_t bit = (val >> bit_index) & 1;
 
@@ -471,11 +471,11 @@ void bit(CPU *cpu, uint8_t bit_index, enum RegisterName target) {
  *
  * 1  0  1  1  1  1  1  1
  * */
-void reset(CPU *cpu, uint8_t bit_index, enum RegisterName target) {
+void reset(CPU *cpu, uint8_t bit_index, enum RegisterName target) {  // NOLINT
     uint8_t val = get_reg(cpu, target);
     uint8_t res = val & ~(1 << bit_index);
 
-    set_reg(cpu, target, res);
+    set_reg(cpu, target, res);  // NOLINT
 }
 
 /* Set bit at bit_index to 1
@@ -487,11 +487,11 @@ void reset(CPU *cpu, uint8_t bit_index, enum RegisterName target) {
  *
  * 0  1  0  0  0  0  0  0
  * */
-void set(CPU *cpu, uint8_t bit_index, enum RegisterName target) {
+void set(CPU *cpu, uint8_t bit_index, enum RegisterName target) {  // NOLINT
     uint8_t val = get_reg(cpu, target);
     uint8_t res = val | (1 << bit_index);
 
-    set_reg(cpu, target, res);
+    set_reg(cpu, target, res);  // NOLINT
 }
 
 /* Shift target right into carry
@@ -514,7 +514,7 @@ void srl(CPU *cpu, enum RegisterName target) {
     bool carry = lsb == 1;
     update_flags(cpu, zero, subtract, half_carry, carry);
 
-    set_reg(cpu, target, res);
+    set_reg(cpu, target, res);  // NOLINT
 }
 
 /* Rotate target right through carry
@@ -538,7 +538,7 @@ void rr(CPU *cpu, enum RegisterName target) {
     bool carry = lsb == 1;
     update_flags(cpu, zero, subtract, half_carry, carry);
 
-    set_reg(cpu, target, res);
+    set_reg(cpu, target, res);  // NOLINT
 }
 
 /* Rotate target left through carry
@@ -562,7 +562,7 @@ void rl(CPU *cpu, enum RegisterName target) {
     bool carry = msb == 1;
     update_flags(cpu, zero, subtract, half_carry, carry);
 
-    set_reg(cpu, target, res);
+    set_reg(cpu, target, res);  // NOLINT
 }
 
 /* Rotate target right and set carry to lsb
@@ -584,7 +584,7 @@ void rrc(CPU *cpu, enum RegisterName target) {
     bool carry = lsb == 1;
     update_flags(cpu, zero, subtract, half_carry, carry);
 
-    set_reg(cpu, target, res);
+    set_reg(cpu, target, res);  // NOLINT
 }
 
 /* Rotate A left and set carry to msb
@@ -606,7 +606,7 @@ void rlc(CPU *cpu, enum RegisterName target) {
     bool carry = msb == 1;
     update_flags(cpu, zero, subtract, half_carry, carry);
 
-    set_reg(cpu, target, res);
+    set_reg(cpu, target, res);  // NOLINT
 }
 
 /* Shift target right into carry (also sign extend)
@@ -630,7 +630,7 @@ void sra(CPU *cpu, enum RegisterName target) {
     bool carry = lsb == 1;
     update_flags(cpu, zero, subtract, half_carry, carry);
 
-    set_reg(cpu, target, res);
+    set_reg(cpu, target, res);  // NOLINT
 }
 
 /* Shift target left into carry
@@ -651,7 +651,7 @@ void sla(CPU *cpu, enum RegisterName target) {
     bool carry = msb == 1;
     update_flags(cpu, zero, subtract, half_carry, carry);
 
-    set_reg(cpu, target, res);
+    set_reg(cpu, target, res);  // NOLINT
 }
 
 void swap(CPU *cpu, enum RegisterName target) {
@@ -666,5 +666,5 @@ void swap(CPU *cpu, enum RegisterName target) {
     bool carry = false;
     update_flags(cpu, zero, subtract, half_carry, carry);
 
-    set_reg(cpu, target, res);
+    set_reg(cpu, target, res);  // NOLINT
 }

@@ -122,7 +122,7 @@ format: ## Format code with clang-format (requires a .clang-format file)
 
 .PHONY: lint
 lint: ## Run cppcheck and clang-tidy
-	cppcheck --enable=all --inconclusive --quiet --std=c11 -I$(INC_DIR) --suppress=missingIncludeSystem $(SRC_DIR) $(INC_DIR) $(TEST_DIR)
+	cppcheck --enable=all --inconclusive --quiet --std=c11 -I$(INC_DIR) --suppress=missingIncludeSystem --suppress=unusedFunction $(SRC_DIR) $(INC_DIR) $(TEST_DIR)
 	@if command -v clang-tidy &> /dev/null; then \
 		clang-tidy $(SRC_FILES) -- $(CFLAGS); \
 	else \

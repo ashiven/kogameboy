@@ -3,6 +3,6 @@
 #include "../include/cpu.h"
 
 int main() {
-  assert(1 == 1);
-  return 0;
+    assert(1 != 2);
+    return 0;
 }
